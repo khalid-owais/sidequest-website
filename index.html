@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Side Quest</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f8ff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        h1 {
+            color: #2f4f4f;
+            font-size: 2.5rem;
+        }
+
+        #quest {
+            font-size: 1.5rem;
+            color: #333;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 600px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        #streak {
+            font-size: 1.2rem;
+            color: #2e8b57;
+        }
+
+        button {
+            background-color: #2e8b57;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #1f6b42;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Your Random Side Quest</h1>
+    <div id="quest">Loading...</div>
+    <div id="streak">Streak: 0 days</div>
+    <button onclick="resetStreak()">Reset Streak</button>
+
+    <script>
+        const allQuests = [
+            "Go outside and watch the sunset",
+            "Compliment a stranger",
+            "Write down three things you're grateful for",
+            "Read a chapter of a book",
+            "Call a friend and catch up",
+            "Do 15 minutes of stretching",
+            "Try a new recipe",
+            "Take a 10-minute walk",
+            "Meditate for 5 minutes",
+            "Do a random act of kindness",
+            "Write a letter to your future self",
+            "Spend 30 minutes decluttering your space",
+            "Learn a new word in another language",
+            "Watch a documentary on a subject you're curious about",
+            "Cook a meal for someone",
+            "Plan your day for tomorrow",
+            "Practice deep breathing for 5 minutes",
+            "Sketch or draw something for fun",
+            "Organize your digital files",
+            "Visit a place you've never been to",
+            "Write down a positive affirmation",
+            "Practice 10 minutes of mindfulness",
+            "Reconnect with an old hobby",
+            "Write a letter of appreciation to yourself",
+            "Watch a TED talk on a subject that interests you",
+            "Explore a nearby park",
+            "Try to solve a puzzle or riddle",
+            "Do 10 minutes of cardio",
+            "Listen to music you’ve never heard before",
+            "Compliment yourself",
+            "Plan a fun weekend activity",
+            "Try a new hobby or craft",
+            "Unplug from social media for an hour",
+            "Take photos of nature around you",
+            "Write a short story or poem",
+            "Do something nice for a neighbor",
+            "Plan a future trip",
+            "Research a topic you've always wanted to know about",
+            "Create a vision board for your goals",
+            "Spend an hour without technology",
+            "Look at old photos and reflect on memories",
+            "Reach out to a family member and ask how they are",
+            "Organize a small area of your home",
+            "Try journaling for 10 minutes",
+            "Write down your long-term goals",
+            "Look up an interesting historical event",
+            "Learn something new online",
+            "Spend time with pets or animals",
+            "Take a different route on your walk",
+            "Write a thank you note to someone"
+        ];
+
+        // Initialize quests if not already saved in localStorage
+        let quests = JSON.parse(localStorage.getItem("quests")) || [...allQuests];
+
+        // Get today's date
+        const currentDate = new Date().toLocaleDateString();
+
+        // Retrieve last saved date and streak from localStorage
+        const savedDate = localStorage.getItem("questDate");
+        let streak = localStorage.getItem("streak") || 0;
+
+        if (quests.length === 0) {
+            // If quests are empty, refill them with the original list
+            quests = [...allQuests];
+        }
+
+        // If the last saved date is not today, generate a new quest
+        if (savedDate !== currentDate) {
+            const randomIndex = Math.floor(Math.random() * quests.length);
+            const newQuest = quests[randomIndex];
+            localStorage.setItem("currentQuest", newQuest);
+            localStorage.setItem("questDate", currentDate);
+
+            // Remove the selected quest from the array and update localStorage
+            quests.splice(randomIndex, 1);
+            localStorage.setItem("quests", JSON.stringify(quests));
+
+            // Increase streak if consecutive day, otherwise reset it
+            if (savedDate) {
+                const yesterday = new Date();
+                yesterday.setDate(yesterday.getDate() - 1);
+                if (new Date(savedDate).toLocaleDateString() === yesterday.toLocaleDateString()) {
+                    streak++;
+                } else {
+                    streak = 1; // Reset streak if it's not consecutive
+                }
+            } else {
+                streak = 1;
+            }
+
+            localStorage.setItem("streak", streak);
+        }
+
+        // Display current quest and streak
+        document.getElementById("quest").innerText = localStorage.getItem("currentQuest");
+        document.getElementById("streak").innerText = `Streak: ${streak} day${streak > 1 ? 's' : ''}`;
+
+        // Function to reset the streak manually
+        function resetStreak() {
+            streak = 0;
+            localStorage.setItem("streak", streak);
+            document.getElementById("streak").innerText = `Streak: ${streak} days`;
+        }
+    </script>
+</body>
+</html>
